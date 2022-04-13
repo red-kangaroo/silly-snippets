@@ -35,7 +35,7 @@ LOCATIONS = ['O', 'o',
 IGNORE = [' ', '\n']
 
 # TODO: Name your map here:
-MAP_NAME = "omega_world"
+MAP_NAME = "island"
 
 
 ##################################################
