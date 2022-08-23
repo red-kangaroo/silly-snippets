@@ -1,0 +1,13 @@
+Roll & Keep
+
+STAT: 3
+SKILL: 3
+
+output [highest STAT of (STAT+SKILL)d[explode d6]] named "5k3"
+
+
+
+STAT: 6
+
+output [highest 1 of STATd6] = 6
+output [count 6 in STATd6]

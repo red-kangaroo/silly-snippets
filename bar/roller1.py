@@ -92,6 +92,10 @@ def get_pool_stats():
 def get_gonzo_stats():
     ms = 0
 
+    hp = 0
+    # lvl = 1
+    hd = 6
+
     for stat in stats2:
         res = roll()
         score = res[0]
@@ -101,7 +105,10 @@ def get_gonzo_stats():
 
         if score > ms:
             ms = score
+        if stat == "Endurance":
+            hp = (score**2) * random.randint(1, hd)
 
+    print(f"\nHP: {hp}")
     return ms <= 20
 
 
