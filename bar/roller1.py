@@ -93,6 +93,9 @@ def get_gonzo_stats():
     ms = 0
 
     hp = 0
+    mp = 0
+    mp_stat = 0
+    mp_skill = 5
     # lvl = 1
     hd = 6
 
@@ -107,8 +110,13 @@ def get_gonzo_stats():
             ms = score
         if stat == "Endurance":
             hp = (score**2) * random.randint(1, hd)
+        if stat == "Essence":
+            mp = score  # random.randint(1, score)
+        if stat in ["Cunning", "Willpower", "Charisma"] and score > mp_stat:
+            mp_stat = score
 
     print(f"\nHP: {hp}")
+    print(f"EP: {mp * (mp_stat + mp_skill)}")
     return ms <= 20
 
 
