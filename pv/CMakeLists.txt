@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-set(PROJECT_NAME "VectorSum")
+set(PROJECT_NAME "AK9PV")
 project(${PROJECT_NAME})
 
 find_package(CUDA REQUIRED)
@@ -12,4 +12,4 @@ list(APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_35,code=sm_35 -Wno-deprecated
 
 cuda_add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} /usr/local/cuda/lib64/libcudart.so)
+target_link_libraries(${PROJECT_NAME} /usr/local/cuda-12.0/lib64/libcudart.so)
