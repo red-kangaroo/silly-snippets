@@ -4,7 +4,8 @@ project(${PROJECT_NAME})
 
 find_package(CUDA REQUIRED)
 
-set(SOURCES vectorSum.cu)
+#set(SOURCES vectorSum.cu)
+set(SOURCES matrixMult.cu)
 
 list(APPEND CMAKE_CXX_FLAGS "-O2 -ffast-math -Wall")
 list(APPEND CUDA_NVCC_FLAGS "--compiler-options -fno-strict-aliasing -lineinfo -use_fast_math --ptxas-options -dlcm=cg")

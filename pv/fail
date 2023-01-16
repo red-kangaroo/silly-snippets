@@ -9,3 +9,12 @@ W: Sources disagree on hashes for supposely identical version '12.0.0-1' of 'cud
 W: Sources disagree on hashes for supposely identical version '12.0.0-1' of 'cuda-libraries-dev-12-0:amd64'.
 W: Sources disagree on hashes for supposely identical version '12.0.0-1' of 'cuda-12-0:amd64'.
 E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+
+sudo apt install nvidia-cuda-toolkit
+
+
+
+
+https://askubuntu.com/questions/530043/removing-nvidia-cuda-toolkit-and-installing-new-one

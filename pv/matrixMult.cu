@@ -91,12 +91,12 @@ int main(int argc, char **argv) {
   CUDA_CHECK_RETURN(cudaDeviceSynchronize());
   CUDA_CHECK_RETURN(cudaMemcpy(out_C, C.cell, sizeof(float) * C.width * C.height, cudaMemcpyDeviceToHost));
 
-  for(int r = 0; r < C.height; ++r){
+  /*for(int r = 0; r < C.height; ++r){
     for(int c = 0; c < C.width; ++c){
-      std::cout << out_C[r * C.width + c] << "  ";
+      printf("%d  ", out_C[r * C.width + c]);
     }
-    std::cout<<""<<std::endl;
-  }
+    printf("\n");
+  }*/
 
   CUDA_CHECK_RETURN(cudaFree(A.cell));
   CUDA_CHECK_RETURN(cudaFree(B.cell));
