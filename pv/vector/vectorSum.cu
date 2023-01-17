@@ -20,8 +20,8 @@
 		exit( 1 );												\
 	} }
 
-#define VECTOR_SIZE 250
-
+#define VECTOR_SIZE 256
+#define BLOCK_SIZE 64
 
 __global__ void vectorSum(int *A, int *B, int *C, int length){
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
@@ -54,9 +54,7 @@ int main(int argc, char **argv) {
   CUDA_CHECK_RETURN(cudaMemcpy(d_A, h_A, sizeof(int) * VECTOR_SIZE, cudaMemcpyHostToDevice));
   CUDA_CHECK_RETURN(cudaMemcpy(d_B, h_B, sizeof(int) * VECTOR_SIZE, cudaMemcpyHostToDevice));
 
-  int BLOCK_SIZE = 256;
   int GRID_SIZE = (VECTOR_SIZE + BLOCK_SIZE - 1) / BLOCK_SIZE;
-
   vectorSum<<<GRID_SIZE, BLOCK_SIZE>>>(d_A, d_B, d_C, VECTOR_SIZE);
 
   // Await:

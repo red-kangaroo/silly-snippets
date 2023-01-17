@@ -34,15 +34,15 @@ __global__ void matrixMult(Matrix A, Matrix B, Matrix C){
   int col = blockIdx.x * blockDim.x + threadIdx.x;
 
   float val = 0;
-  printf("row: %d col: %d \n", row, col);
+//   printf("Row: %d  Col: %d\n", row, col);
 
-  if (row < A.width && col < A.height) {
+  if (row < A.width && col < A.height){
       for(int i = 0; i < A.width; i++){
         val += A.cell[row * A.width + i] * B.cell[i * B.width + col];
-        printf("val: %f ", val);
+//         printf(" Val: %f ", val);
         C.cell[row * C.width + col] = val;
       }
-      printf("\n");
+//       printf("\n");
   }
 }
 
