@@ -120,25 +120,35 @@ def get_gonzo_stats():
     return ms <= 20
 
 
-# Differentiate current (effective) attribute score and permanent (maximum) attribute score.
-# Pool of d6s? Any 6 is a success.
-# Can split large pool for multiple actions.
-# You can go into debt during character creation no higher than your Charisma * 10.
-# When you run out of Endurance, roll d6 for injury location, destroy armour if present, then destroy limb.
+"""
+Roll:
+    d6*d6 + stat + skill
+DC
+easy   15
+normal 20
+hard   25
+"""
 
-# Successes:
-#  1: success on EASY
-#     flawed success, success at a cost, or can try again on NORMAL
-#  2: success on NORMAL
+"""
+Differentiate current (effective) attribute score and permanent (maximum) attribute score.
+Pool of d6s? Any 6 is a success.
+Can split large pool for multiple actions.
+You can go into debt during character creation no higher than your Charisma * 10.
+When you run out of Endurance, roll d6 for injury location, destroy armour if present, then destroy limb.
 
-# Combat Pool resets at the start of each round. Then players wager any number of dice as initiative dice. They take
-# one action in order of number of initiative dice wagered; in case of a tie, they roll and higher success number goes
-# first, if there is still a tie, higher Dexterity goes first. Once everyone who had initiative dice had their action,
-# wager initiative again for another action. Players who have no more dice in their Combat Pool can take no further
-# actions until next round.
-# Warriors may add dice to their Combat Pool by spending points of Spirit, 1 for 1.
-# For attack/defense, get dice from your weapon/armour, plus may add any number from Combat Pool (even 0).
+Successes:
+ 1: success on EASY
+    flawed success, success at a cost, or can try again on NORMAL
+ 2: success on NORMAL
 
+Combat Pool resets at the start of each round. Then players wager any number of dice as initiative dice. They take
+one action in order of number of initiative dice wagered; in case of a tie, they roll and higher success number goes
+first, if there is still a tie, higher Dexterity goes first. Once everyone who had initiative dice had their action,
+wager initiative again for another action. Players who have no more dice in their Combat Pool can take no further
+actions until next round.
+Warriors may add dice to their Combat Pool by spending points of Spirit, 1 for 1.
+For attack/defense, get dice from your weapon/armour, plus may add any number from Combat Pool (even 0).
+"""
 
 if __name__ == "__main__":
     # get_pool_stats()
