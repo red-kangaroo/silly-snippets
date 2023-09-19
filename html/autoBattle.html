@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="v2" dir="ltr" lang="en">
+<p id="battleOutput" onkeydown="battle()"></p>
+
+<script>
+
+/* TODO
+two equivalent enemies battling against each other
+every time one is defeated, reset and rename them, keep the victor
+both can use scrolls
+when resetting after victory, update the new enemy by number of victories the other had
+also titles?
+
+randomized critMod
+kill/perish - just kills the enemy
+unravel - deals random damage to both, dDamage to self and dDamage*critMod to enemy
+stun
+pain - half hp
+*/
+
+var battleNo = 1;
+var player = {
+    name: "Cloud",
+    victory: 0,
+    curHp: 0,
+    maxHp: 50,
+    hitChance: 30,
+    critChance: 5,
+    critMod: 2,
+    damage: 20,
+    armour: 0,
+    // Spells:
+    spellHeal: 0,
+    spellHealAbs: 10,
+    spellHealPerc: 10,
+    spellShield: 0,
+    spellShieldAbs: 20,
+    spellShieldPerc: 50,
+    spellSlay: 0,
+    spellSmite: 0,
+    spellSmiteAbs: 10,
+}
+var enemy = {
+    name: "Bahamut",
+    victory: 0,
+    curHp: 0,
+    maxHp: 50,
+    hitChance: 30,
+    critChance: 3,
+    critMod: 2,
+    damage: 10,
+    armour: 0,
+}
+
+var armors = ["<t style='color:#228B22'>Green Tunic</t>",
+              "<t style='color:#696969; font-weight: 900;'>Fur</t> <t style='color:#8B4513'>Cloak</t>",
+              "<t style='color:#D2B48C'>Pa</t><t style='color:#A52A2A'>dd</t><t style='color:#D2B48C'>e</t><t style='color:#A52A2A'>d</t><t style='color:#D2B48C'> Jacket</t>",
+              "<t style='color:#8B4513'>Leather J</t><t style='color:#A52A2A'>ac</t><t style='color:#8B4513'>ket</t>",
+              "<t style='color:#A52A2A'>Leather Arm</t><t style='color:#8B4513'>ou</t><t style='color:#A52A2A'>r</t>",
+              "<t style='color:#A52A2A'>Qu</t><t style='color:#696969'>i</t><t style='color:#A52A2A'>lted Leather Armour</t>",
+              "<t style='color:#A52A2A'>Stu</t><t style='color:#282828'>dd</t><t style='color:#A52A2A'>e</t><t style='color:#282828'>d</t><t style='color:#A52A2A'> Leather Armour</t>",
+              "<t style='color:#CD5C5C'>Ch</t><t style='color:#F08080'>i</t><t style='color:#CD5C5C'>t</t><t style='color:#F08080'>i</t><t style='color:#CD5C5C'>n Cu</t><t style='color:#F08080'>i</t><t style='color:#CD5C5C'>rass</t>",
+              "<t style='color:#8B4513'>Bri</t><t style='color:#282828'>g</t><t style='color:#8B4513'>an</t><t style='color:#282828'>d</t><t style='color:#8B4513'>ine</t>",
+              "<t style='color:#C0C0C0'>Cha</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>n Sh</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>rt</t>",
+              "<t style='color:#282828'>Bu</t><t style='color:#686868'>ll</t><t style='color:#282828'>etpr</t><t style='color:#686868'>oo</t><t style='color:#282828'>f Vest</t>",
+              "<t style='color:#484848'>Sc</t><t style='color:#686868'>a</t><t style='color:#484848'>le Ma</t><t style='color:#282828'>i</t><t style='color:#484848'>l</t>",
+              "<t style='color:#A52A2A'>Ironb</t><t style='color:#C0C0C0'>a</t><t style='color:#A52A2A'>rk Bre</t><t style='color:#C0C0C0'>a</t><t style='color:#A52A2A'>stpl</t><t style='color:#C0C0C0'>a</t><t style='color:#A52A2A'>te</t>",
+              "<t style='color:#C0C0C0'>Cha</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>n Ma</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>l</t>",
+              "<t style='color:#708090'>Haub</t><t style='color:#4682B4'>e</t><t style='color:#708090'>rk</t>",
+              "<t style='color:#C0C0C0'>R</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>ng Ma</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>l</t>",
+              "<t style='color:#A52A2A'>Ban</t><t style='color:#282828'>d</t><t style='color:#A52A2A'>e</t><t style='color:#282828'>d</t><t style='color:#A52A2A'> Armour</t>",
+              "<t style='color:#484848'>Spl</t><t style='color:#282828'>i</t><t style='color:#484848'>nt Ma</t><t style='color:#282828'>i</t><t style='color:#484848'>l</t>",
+              "<t style='color:#800080; font-weight: 900;'>Magic</t> <t style='color:#8B4513'>Cloak</t>",
+              "<t style='color:#C0C0C0'>Half Pl</t><t style='color:#282828'>a</t><t style='color:#C0C0C0'>te Ma</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>l</t>",
+              "<t style='color:#C0C0C0'>M</t><t style='color:#4682B4'>i</t><t style='color:#C0C0C0'>thr</t><t style='color:#4682B4'>i</t><t style='color:#C0C0C0'>l Cha</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>n Ma</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>l</t>",
+              "<t style='color:#C0C0C0'>Full Pl</t><t style='color:#282828'>a</t><t style='color:#C0C0C0'>te Ma</t><t style='color:#282828'>i</t><t style='color:#C0C0C0'>l</t>",
+              "<t style='color:#FF1493'>Crystal</t> <t style='color:#9932CC'>Shard</t> <t style='color:#8B008B'>Mail</t>",
+              "<t style='color:#484848'>Dr</t><t style='color:#FF4500'>a</t><t style='color:#484848'>gon Sc</t><t style='color:#FF4500'>a</t><t style='color:#484848'>le Ma</t><t style='color:#FF4500'>i</t><t style='color:#484848'>l</t>",
+              "<t style='color:#C4BE96'>H</t><t style='color:#B8860B'>e</t><t style='color:#C4BE96'>r</t><t style='color:#B8860B'>o</t><t style='color:#C4BE96'>ic Cuir</t><t style='color:#B8860B'>a</t><t style='color:#C4BE96'>ss</t>",
+              "<t style='color:#D2B48C'>Stone Pl</t><t style='color:#F4A460'>a</t><t style='color:#D2B48C'>te Ma</t><t style='color:#F4A460'>i</t><t style='color:#D2B48C'>l</t>",
+              "<t style='color:#FFD700'>S</t><t style='color:#B8860B'>o</t><t style='color:#FFD700'>lid G</t><t style='color:#B8860B'>o</t><t style='color:#FFD700'>ld Arm</t><t style='color:#B8860B'>o</t><t style='color:#FFD700'>ur</t>",
+              "<t style='color:#8B008B'>Crystal</t> <t style='color:#9932CC'>Plate</t> <t style='color:#FF1493'>Mail</t>",
+              "<t style='color:#A52A2A'>N</t><t style='color:#FF8C00'>e</t><t style='color:#A52A2A'>m</t><t style='color:#FF8C00'>ea</t><t style='color:#A52A2A'>n L</t><t style='color:#FF8C00'>io</t><t style='color:#A52A2A'>n H</t><t style='color:#FF8C00'>i</t><t style='color:#A52A2A'>d</t><t style='color:#FF8C00'>e</t>",
+              "<t style='color:#4682B4'>Adamantine A</t><t style='color:#000000'>r</t><t style='color:#4682B4'>mou</t><t style='color:#000000'>r</t>",
+              "<t style='color:#484848'>P</t><t style='color:#00BFFF'>o</t><t style='color:#484848'>w</t><t style='color:#00BFFF'>e</t><t style='color:#484848'>r</t><t style='color:#00BFFF'>e</t><t style='color:#484848'>d Arm</t><t style='color:#FF0000'>o</t><t style='color:#484848'>ur</t>"];
+
+
+function startBattle() {
+    msgClear();
+
+    player.curHp = player.maxHp;
+    enemy.curHp = enemy.maxHp;
+
+    var spells = "";
+    if(player.spellHeal) {
+        spells += `<br>Power Word: Heal: ${player.spellHeal}`;
+    }
+    if(player.spellShield) {
+        spells += `<br>Power Word: Shield: ${player.spellShield}`;
+    }
+    if(player.spellSlay) {
+        spells += `<br>Power Word: Slay: ${player.spellSlay}`;
+    }
+    if(player.spellSmite) {
+        spells += `<br>Power Word: Smite: ${player.spellSmite}`;
+    }
+
+    msg(`${player.name} (${player.victory} victories)<br>Hit points: ${player.curHp}/${player.maxHp}<br>Hit chance: ${player.hitChance}%<br>Hit damage: ${player.damage}<br>Crit chance: ${player.critChance}%<br>Crit modifier: ${player.critMod}x<br>Armour: ${getArmorName(player.armour)} (${player.armour} defence)${spells}<br><br>`);
+    msg(`${enemy.name} (${enemy.victory} victories)<br>Hit points: ${enemy.curHp}/${enemy.maxHp}<br>Hit chance: ${enemy.hitChance}%<br>Hit damage: ${enemy.damage}<br>Crit chance: ${enemy.critChance}%<br>Crit modifier: ${enemy.critMod}x<br>Armour: ${getArmorName(enemy.armour)} (${enemy.armour} defence)<br><br>`);
+    msg(`Battle ${battleNo} starts!<br><br><br>`);
+}
+
+//Player's Attack Turn
+function playerTurn() {
+    var playerAccuracy = r(100) < player.hitChance;
+    var playerCritical = r(100) < player.critChance;
+    var playerDamage = Math.max(d(player.damage) - r(enemy.armour), 0);
+
+    if(player.spellHeal > 0 &&
+        (player.curHp <= player.spellHealAbs || player.curHp <= (player.maxHp * player.spellHealPerc / 100))) {
+        var heal = Math.min(d(player.maxHp), player.maxHp - player.curHp);
+        player.curHp += heal;
+        msg(`You use a Power Word: Heal! You heal ${heal} HP.<br>`);
+        player.spellHeal -= 1;
+    }
+    if(player.spellSlay > 0 && !playerCritical && !playerAccuracy) {
+        playerAccuracy = r(50) < player.hitChance;
+        playerCritical = r(50) < player.critChance;
+        msg(`You use a Power Word: Slay!<br>`);
+        player.spellSlay -= 1;
+    }
+    if(player.spellSmite > 0 && (playerCritical || playerAccuracy) && playerDamage >= player.spellSmiteAbs) {
+        playerDamage *= player.critMod;
+        msg(`You use a Power Word: Smite!<br>`);
+        player.spellSmite -= 1;
+    }
+
+    if(playerCritical){
+        playerDamage *= player.critMod;
+        enemy.curHp -= playerDamage;
+        var crits = "!".repeat(player.critMod);
+        msg(`Your attack HITS${crits} ${enemy.name} suffers ${playerDamage} damage.`);
+    } else if(playerAccuracy) {
+        enemy.curHp -= playerDamage;
+        msg(`Your attack hits. ${enemy.name} suffers ${playerDamage} damage.`);
+    } else {
+        msg(`Your attack misses.`);
+    }
+    msg(` ${enemy.name}: ${enemy.curHp}/${enemy.maxHp} HP<br>`);
+};
+
+//Enemy's Attack Turn
+function enemyTurn() {
+    var enemyAccuracy = r(100) < enemy.hitChance;
+    var enemyCritical = r(100) < enemy.critChance;
+    var enemyDamage = Math.max(d(enemy.damage) - r(player.armour), 0);
+
+    if(enemyAccuracy && player.spellShield > 0 &&
+        (enemyDamage >= player.curHp || enemyDamage >= player.spellShieldAbs || enemyDamage >= (player.maxHp * player.spellShieldPerc / 100) || enemyCritical)) {
+        oldDmg = enemyDamage;
+        enemyDamage = Math.max(Math.min(Math.floor(enemyDamage/2), enemyDamage-10), 0);
+        msg(`You use a Power Word: Shield! Damage decreased from ${oldDmg} to ${enemyDamage}.<br>`);
+        player.spellShield -= 1;
+    }
+
+    if(enemyCritical) {
+        enemyDamage *= enemy.critMod;
+        player.curHp -= enemyDamage;
+        var crits = "!".repeat(enemy.critMod);
+        msg(`${enemy.name} HITS you${crits} You suffer ${enemyDamage} damage.`);
+    } else if(enemyAccuracy) {
+        player.curHp -= enemyDamage;
+        msg(`${enemy.name} hits. You suffer ${enemyDamage} damage.`);
+    } else {
+        msg(`${enemy.name} misses.`);
+    }
+    msg(` ${player.name}: ${player.curHp}/${player.maxHp} HP<br>`);
+};
+
+function endTurn() {
+    msg(`<br>`);
+}
+
+function victory() {
+    msg("<br>Victory!<br>");
+    player.victory += 1;
+
+    boostPlayer();
+    boostEnemy();
+}
+
+function defeat() {
+    msg("<br>Defeat!<br>");
+    enemy.victory += 1;
+
+    boostEnemy();
+    boostEnemy();
+}
+
+function boostPlayer() {
+    switch(r(6)) {
+        default:
+            player.maxHp += 4+d(6);
+            break;
+        case 1:
+            player.hitChance += d(6)+d(6);
+            break;
+        case 2:
+            player.critChance += d(4)+1;
+            break;
+        case 3:
+            player.critMod += 1;
+            break;
+        case 4:
+            player.damage += d(6)+d(6);
+            break;
+        case 5:
+            player.armour += d(3)+1;
+            break;
+    }
+    giveSpell();
+}
+function giveSpell() {
+    switch(r(10)) {
+        //default: nothing
+        case 6:
+            player.spellHeal += 1;
+            break;
+        case 7:
+            player.spellShield += 1;
+            break;
+        case 8:
+            player.spellSlay += 1;
+            break;
+        case 9:
+            player.spellSmite += 1;
+            break;
+    }
+}
+function boostEnemy() {
+    switch(r(6)) {
+        default:
+            enemy.maxHp += 4+d(20);
+            break;
+        case 1:
+            enemy.hitChance += d(4)+d(4);
+            break;
+        case 2:
+            enemy.critChance += d(4);
+            break;
+        case 3:
+            enemy.critMod += 1;
+            break;
+        case 4:
+            enemy.damage += 4+d(10);
+            break;
+        case 5:
+            enemy.armour += d(3)+1;
+            break;
+    }
+}
+
+function r(c) {return Math.floor(Math.random() * c);}
+function d(c) {return r(c)+1;}
+
+function waitingKeypress() {
+  return new Promise((resolve) => {
+    document.addEventListener('keydown', onKeyHandler);
+    function onKeyHandler(e) {
+      if (e.keyCode === 32) {
+        document.removeEventListener('keydown', onKeyHandler);
+        resolve();
+      }
+    }
+  });
+}
+
+function getArmorName(a) {
+ var armour = "";
+ if(a < armors.length) armour = armors[a];
+ else armour = armors[armors.length-1] + " +" + String(a - armors.length + 1);
+ return armour;
+}
+
+function msg(m) {
+    document.getElementById("battleOutput").innerHTML += m;
+}
+function msgClear() {
+    document.getElementById("battleOutput").innerHTML = "";
+}
+
+function battle() {
+    giveSpell();
+    startBattle();
+
+    turnNo = 0;
+    while(turnNo < 100) {
+        playerTurn();
+        if(enemy.curHp <= 0) {
+            victory();
+            break;
+        }
+        if(enemy.curHp > 0)
+            enemyTurn();
+        if(player.curHp <= 0) {
+            defeat();
+            break;
+        }
+        endTurn();
+        turnNo += 1;
+    }
+
+    msg("<br><br>Click to continue...");
+    battleNo += 1;
+}
+
+
+battle();
+document.addEventListener("click", function() {
+    window.scrollTo(0, 0);
+    battle();
+});
+</script>
+</html>
