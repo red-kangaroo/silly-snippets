@@ -16,15 +16,15 @@ stats = [
 ]
 stats2 = [
     "Strength",
-    "Stamina",
+    # "Stamina",
     "Dexterity",
-    "Agility",
+    "Speed",  # "Agility",
     "Endurance",
-    "Perception",
-    "Cunning",
-    "Willpower",
-    "Essence",
-    "Charisma"
+    # "Perception",
+    "Intellect",  # "Cunning",
+    "Wits",  # "Willpower",
+    "Charisma",
+    "Essence"
 ]
 combat_stats = [
     "Strength",
@@ -96,7 +96,7 @@ def get_gonzo_stats():
     mp = 0
     mp_stat = 0
     mp_skill = 5
-    # lvl = 1
+    lvl = 0
     hd = 6
 
     for stat in stats2:
@@ -105,6 +105,9 @@ def get_gonzo_stats():
         rolled = res[1]
         bonus = int(math.sqrt(score))
         print(f"{stat: <{max_stat_len}}: {score: <2} / +{bonus} ({prob_from_bonus[bonus]}%)   {rolled}")
+
+        # Attribute level:
+        lvl += score
 
         if score > ms:
             ms = score
@@ -117,6 +120,7 @@ def get_gonzo_stats():
 
     print(f"\nHP: {hp}")
     print(f"EP: {mp * (mp_stat + mp_skill)}")
+    print(f"AL: {lvl}")
     return ms <= 20
 
 

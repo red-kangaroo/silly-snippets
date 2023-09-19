@@ -11,3 +11,17 @@ STAT: 6
 
 output [highest 1 of STATd6] = 6
 output [count 6 in STATd6]
+
+
+
+DARO
+
+function: daro ROLL:s {
+  if 1@ROLL = 2@ROLL {
+    result: ROLL + 2d6
+  } else {
+    result: ROLL
+  }
+}
+output 2d6 named "normal 2d6"
+output [daro 2d6] named "2d6 explode doubles"
