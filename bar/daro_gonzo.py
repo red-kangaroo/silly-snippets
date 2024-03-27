@@ -3,7 +3,7 @@
 
 import math
 import random
-from roller2 import prob_from_bonus
+from daro import prob_from_bonus
 
 stats = [
     "Strength",
