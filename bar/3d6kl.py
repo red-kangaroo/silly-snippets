@@ -6,12 +6,24 @@ import random
 stats = [
     "Strength",
     "Dexterity",
-    "Endurance",
-    "Charisma",
-    "Spirit",
+    # "Endurance",
+    # "Charisma",
+    # "Spirit",
     "Wits"
 ]
-max_stat_len = 9
+skills = [
+    "Athletics",
+    "Alchemy",
+    "Beastcraft",
+    "Education",
+    "Medicine",
+    "Occult",
+    "Seamanship",
+    "Stealth",
+    "Tinker",
+    "Wildcraft",
+]
+max_stat_len = 10
 
 
 ##################################################
@@ -30,10 +42,25 @@ def roll_stats():
 
 if __name__ == "__main__":
     total_gold = 0
+    total_stat = 0
 
     for s in stats:
         score, gold = roll_stats()
+        total_stat += score
         total_gold += gold
+
         print(f"{s: <{max_stat_len}}: +{score}")
+
+    print("")
+    skillz = dict()
+    for i in range(20 - total_stat):
+        skill = random.choice(skills)
+        if skill in skillz.keys():
+            skillz[skill] += 1
+        else:
+            skillz[skill] = 1
+    skillz = dict(sorted(skillz.items()))
+    for skill, bonus in skillz.items():
+        print(f"{skill: <{max_stat_len}}: +{bonus}")
 
     print(f"\nGold: {total_gold}")
