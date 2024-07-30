@@ -26,6 +26,14 @@ stats2 = [
     "Charisma",
     "Essence"
 ]
+stats3 = [
+    "Strength",
+    "Speed",
+    "Stamina",
+    "Str-o-Will",
+    "Magic",
+    "Fellowship"
+]
 combat_stats = [
     "Strength",
     "Dexterity",
@@ -58,6 +66,21 @@ def roll():
             break
 
     return total, nums
+
+
+def break_num2(num, count):
+    ingreds = [num // count for _ in range(count)]
+
+    while count:
+        i1 = random.randrange(len(ingreds))
+        i2 = (i1 + 1) % len(ingreds)
+        n = random.randint(0, ingreds[i1])
+        ingreds[i1] -= n
+        ingreds[i2] += n
+        count -= 1
+    if sum(ingreds) < num:
+        ingreds.append(num - sum(ingreds))
+    return ingreds
 
 
 def get_pool_stats():
@@ -124,6 +147,56 @@ def get_gonzo_stats():
     return ms <= 20
 
 
+def get_console_stats():
+    ms = 0
+    lvl = 0
+
+    print(f"{max_stat_len * ' '} Raw | Bn | Multi")
+
+    pwr_lvl = 10
+
+    bonus_stats = dict()
+    if pwr_lvl > 1:
+        stat_bonus = (pwr_lvl - 1) * 2
+        bonus_stats = break_num2(stat_bonus, len(stats3))
+
+    for ndx, stat in enumerate(stats3):
+        res = roll()
+        score = res[0] + bonus_stats[ndx]
+        rolled = res[1]
+        bonus = int((score + pwr_lvl) // 2)
+        multi = int(math.sqrt(score))
+        print(f"{stat: <{max_stat_len}}: {score: <2} | {bonus: <2} | x{multi}   {rolled} + {bonus_stats[ndx]}")
+
+        if stat == "Strength":
+            l_str = score // 2
+            l_bonus = int((l_str + pwr_lvl) // 2)
+            a_str = score + (score - l_str)
+            a_bonus = int((a_str + pwr_lvl) // 2)
+
+            print(f"{'Arm': >{max_stat_len}}: {a_str: <2} | {a_bonus: <2} | x{int(math.sqrt(a_str))}")
+            print(f"{'Leg': >{max_stat_len}}: {l_str: <2} | {l_bonus: <2} | x{int(math.sqrt(l_str))}")
+
+        if stat == "Magic":
+            l_str = score // 2
+            l_bonus = int((l_str + pwr_lvl) // 2)
+            a_str = score + (score - l_str)
+            a_bonus = int((a_str + pwr_lvl) // 2)
+
+            print(f"{'Power': >{max_stat_len}}: {a_str: <2} | {a_bonus: <2} | x{int(math.sqrt(a_str))}")
+            print(f"{'Resistance': >{max_stat_len}}: {l_str: <2} | {l_bonus: <2} | x{int(math.sqrt(l_str))}")
+
+        # Attribute level:
+        lvl += score
+
+        if score > ms:
+            ms = score
+
+    print(f"\nPL: {pwr_lvl}")
+    print(f"AL: {lvl}")
+    return ms <= 20
+
+
 """
 Roll:
     d6*d6 + stat + skill
@@ -160,5 +233,6 @@ if __name__ == "__main__":
     # for i in range(4):
     #     print("\n==========\n")
     #     get_gonzo_stats()
-    while get_gonzo_stats():
+
+    while get_console_stats():
         print("\n==========\n")
