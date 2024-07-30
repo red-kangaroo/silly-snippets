@@ -30,17 +30,21 @@ stats3 = [
     "Strength",
     "Speed",
     "Stamina",
-    "Str-o-Will",
+    "Str. of Will",
     "Magic",
     "Fellowship"
 ]
+alt_stats = {
+    "Strength": ["Arm", "Leg"],
+    "Magic": ["Power", "Resist"]
+}
 combat_stats = [
     "Strength",
     "Dexterity",
     # "Speed",
     "Wits"
 ]
-max_stat_len = 10
+max_stat_len = 12
 
 
 ##################################################
@@ -151,46 +155,97 @@ def get_console_stats():
     ms = 0
     lvl = 0
 
-    print(f"{max_stat_len * ' '} Raw | Bn | Multi")
+    pwr_lvl = 1
+    weapon = 5
+    armour = 5
+    shield = 5
 
-    pwr_lvl = 10
-
-    bonus_stats = dict()
+    all_stats = dict()
     if pwr_lvl > 1:
+        bonus_stats = dict()
         stat_bonus = (pwr_lvl - 1) * 2
         bonus_stats = break_num2(stat_bonus, len(stats3))
+    else:
+        bonus_stats = [0] * len(stats3)
 
     for ndx, stat in enumerate(stats3):
         res = roll()
-        score = res[0] + bonus_stats[ndx]
+        score = res[0]
         rolled = res[1]
-        bonus = int((score + pwr_lvl) // 2)
-        multi = int(math.sqrt(score))
-        print(f"{stat: <{max_stat_len}}: {score: <2} | {bonus: <2} | x{multi}   {rolled} + {bonus_stats[ndx]}")
 
-        if stat == "Strength":
+        if stat in alt_stats.keys() and not random.randint(0, 2):
+            alts = alt_stats[stat].copy()
+            random.shuffle(alts)
+
             l_str = score // 2
             l_bonus = int((l_str + pwr_lvl) // 2)
-            a_str = score + (score - l_str)
-            a_bonus = int((a_str + pwr_lvl) // 2)
+            h_str = score + (score - l_str) + bonus_stats[ndx]
+            h_bonus = int((h_str + pwr_lvl) // 2)
 
-            print(f"{'Arm': >{max_stat_len}}: {a_str: <2} | {a_bonus: <2} | x{int(math.sqrt(a_str))}")
-            print(f"{'Leg': >{max_stat_len}}: {l_str: <2} | {l_bonus: <2} | x{int(math.sqrt(l_str))}")
+            all_stats[f"{stat} {alts[0]}"] = {
+                "score": l_str,
+                "bonus": l_bonus,
+                "multi": int(math.sqrt(l_str))
+            }
+            all_stats[f"{stat} {alts[1]}"] = {
+                "score": h_str,
+                "bonus": h_bonus,
+                "multi": int(math.sqrt(h_str)),
+                "roll": f"{rolled} + {bonus_stats[ndx]}"
+            }
+        else:
+            score += bonus_stats[ndx]
+            bonus = int((score + pwr_lvl) // 2)
+            multi = int(math.sqrt(score))
 
-        if stat == "Magic":
-            l_str = score // 2
-            l_bonus = int((l_str + pwr_lvl) // 2)
-            a_str = score + (score - l_str)
-            a_bonus = int((a_str + pwr_lvl) // 2)
-
-            print(f"{'Power': >{max_stat_len}}: {a_str: <2} | {a_bonus: <2} | x{int(math.sqrt(a_str))}")
-            print(f"{'Resistance': >{max_stat_len}}: {l_str: <2} | {l_bonus: <2} | x{int(math.sqrt(l_str))}")
+            all_stats[stat] = {
+                "score": score,
+                "bonus": bonus,
+                "multi": multi,
+                "roll": f"{rolled} + {bonus_stats[ndx]}"
+            }
 
         # Attribute level:
         lvl += score
 
         if score > ms:
             ms = score
+
+    print(f"{max_stat_len * ' '} Raw | Bn | Multi")
+
+    sorted_stats = dict(sorted(all_stats.items(), reverse=True))
+    for stat, s in sorted_stats.items():
+        ln = f"{stat: <{max_stat_len}}: {s['score']: <2} | {s['bonus']: <2} | x{s['multi']}"
+        if "roll" in s.keys():
+            ln += f"   {s['roll']}"
+        print(ln)
+
+    print("")
+
+    block = all_stats["Strength Arm"]["score"] if "Strength Arm" in all_stats.keys() else all_stats["Strength"]["score"]
+    block += all_stats["Stamina"]["score"] + shield
+    block_bonus = int((block + pwr_lvl) // 2)
+    print(f"{'Block': >{max_stat_len}}: {block: <2} | {block_bonus: <2}")
+    dodge = all_stats["Strength Leg"]["score"] if "Strength Leg" in all_stats.keys() else all_stats["Strength"]["score"]
+    dodge += all_stats["Speed"]["score"]
+    dodge_bonus = int((dodge + pwr_lvl) // 2)
+    print(f"{'Dodge': >{max_stat_len}}: {dodge: <2} | {dodge_bonus: <2}")
+    parry = all_stats["Strength Arm"]["score"] if "Strength Arm" in all_stats.keys() else all_stats["Strength"]["score"]
+    parry += weapon
+    parry_bonus = int((parry + pwr_lvl) // 2)
+    print(f"{'Parry': >{max_stat_len}}: {parry: <2} | {parry_bonus: <2}")
+
+    print("")
+
+    arm = all_stats["Stamina"]["score"] + armour
+    arm_bonus = int((arm + pwr_lvl) // 2)
+    print(f"{'Armor': >{max_stat_len}}: {arm: <2} | {arm_bonus: <2}")
+    m_arm = all_stats["Magic Resist"]["score"] if "Magic Resist" in all_stats.keys() else all_stats["Magic"]["score"]
+    m_arm_bonus = int((m_arm + pwr_lvl) // 2)
+    print(f"{'Magic Armor': >{max_stat_len}}: {m_arm: <2} | {m_arm_bonus: <2}")
+    s_arm = all_stats["Fellowship"]["score"]
+    s_arm_bonus = int((s_arm + pwr_lvl) // 2)
+    print(f"{'Social Armor': >{max_stat_len}}: {s_arm: <2} | {s_arm_bonus: <2}")
 
     print(f"\nPL: {pwr_lvl}")
     print(f"AL: {lvl}")
