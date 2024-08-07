@@ -31,18 +31,7 @@ def time_percentage() -> float:
 
 
 if __name__ == "__main__":
-    # cnt = 0
-    # for d in itertools.product(dice, repeat=2):
-    #     print(f"d{d[0]}, d{d[1]}    {sum(d)}")
-    #     # print(f"{d[0]},{d[1]},{sum(d)}")
-    #
-    #     if sum(d) >= 6:
-    #         cnt += 1
-    #
-    # print(f"\nFound {cnt} instances with value of 6+.")
+    from string import ascii_uppercase
 
-    # qry = Test()
-    # print(qry.a)
-    # print(qry.b)
-
-    print(time_percentage())
+    for c in range(10):
+        print(f"| {c} ||")

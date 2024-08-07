@@ -28,9 +28,11 @@ stats2 = [
 ]
 stats3 = [
     "Strength",
+    "Skill",
     "Speed",
     "Stamina",
     "Str. of Will",
+    "Senses",
     "Magic",
     "Fellowship"
 ]
@@ -222,6 +224,25 @@ def get_console_stats():
 
     print("")
 
+    melee = all_stats["Strength Arm"]["score"] if "Strength Arm" in all_stats.keys() else all_stats["Strength"]["score"]
+    melee += all_stats["Skill"]["score"] + weapon
+    melee_bonus = int((melee + pwr_lvl) // 2)
+    print(f"{'Melee': >{max_stat_len}}: {melee: <2} | {melee_bonus: <2}")
+    melee = all_stats["Strength Leg"]["score"] if "Strength Leg" in all_stats.keys() else all_stats["Strength"]["score"]
+    melee += all_stats["Skill"]["score"]
+    melee_bonus = int((melee + pwr_lvl) // 2)
+    print(f"{'Kick': >{max_stat_len}}: {melee: <2} | {melee_bonus: <2}")
+    ranged = all_stats["Speed"]["score"]
+    ranged += all_stats["Skill"]["score"] + weapon
+    ranged_bonus = int((ranged + pwr_lvl) // 2)
+    print(f"{'Ranged': >{max_stat_len}}: {ranged: <2} | {ranged_bonus: <2}")
+    spell = all_stats["Magic Power"]["score"] if "Magic Power" in all_stats.keys() else all_stats["Magic"]["score"]
+    spell += all_stats["Str. of Will"]["score"]
+    spell_bonus = int((spell + pwr_lvl) // 2)
+    print(f"{'Spell': >{max_stat_len}}: {spell: <2} | {spell_bonus: <2}")
+
+    print("")
+
     block = all_stats["Strength Arm"]["score"] if "Strength Arm" in all_stats.keys() else all_stats["Strength"]["score"]
     block += all_stats["Stamina"]["score"] + shield
     block_bonus = int((block + pwr_lvl) // 2)
@@ -230,20 +251,28 @@ def get_console_stats():
     dodge += all_stats["Speed"]["score"]
     dodge_bonus = int((dodge + pwr_lvl) // 2)
     print(f"{'Dodge': >{max_stat_len}}: {dodge: <2} | {dodge_bonus: <2}")
-    parry = all_stats["Strength Arm"]["score"] if "Strength Arm" in all_stats.keys() else all_stats["Strength"]["score"]
-    parry += weapon
+    parry = 0
+    parry += all_stats["Skill"]["score"] + weapon
     parry_bonus = int((parry + pwr_lvl) // 2)
     print(f"{'Parry': >{max_stat_len}}: {parry: <2} | {parry_bonus: <2}")
+    bluff = all_stats["Fellowship"]["score"]
+    bluff_bonus = int((bluff + pwr_lvl) // 2)
+    print(f"{'Bluff': >{max_stat_len}}: {bluff: <2} | {bluff_bonus: <2}")
 
     print("")
 
+    res = all_stats["Stamina"]["score"]
+    res_bonus = int((res + pwr_lvl) // 2)
+    print(f"{'Resiliency': >{max_stat_len}}: {res: <2} | {res_bonus: <2}")
     arm = all_stats["Stamina"]["score"] + armour
     arm_bonus = int((arm + pwr_lvl) // 2)
     print(f"{'Armor': >{max_stat_len}}: {arm: <2} | {arm_bonus: <2}")
     m_arm = all_stats["Magic Resist"]["score"] if "Magic Resist" in all_stats.keys() else all_stats["Magic"]["score"]
+    m_arm += all_stats["Str. of Will"]["score"]
     m_arm_bonus = int((m_arm + pwr_lvl) // 2)
     print(f"{'Magic Armor': >{max_stat_len}}: {m_arm: <2} | {m_arm_bonus: <2}")
     s_arm = all_stats["Fellowship"]["score"]
+    s_arm += all_stats["Str. of Will"]["score"]
     s_arm_bonus = int((s_arm + pwr_lvl) // 2)
     print(f"{'Social Armor': >{max_stat_len}}: {s_arm: <2} | {s_arm_bonus: <2}")
 
