@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html class="v2" dir="ltr" lang="en">
+
+<p id="playerInfo"></p>
+
+<button onclick="battle()">Battle!</button>
+
 <p id="battleOutput" onkeydown="battle()"></p>
 
 <script>
@@ -10,8 +15,11 @@ every time one is defeated, reset and rename them, keep the victor
 both can use scrolls
 when resetting after victory, update the new enemy by number of victories the other had
 also titles?
+initiative
+critMod only +0.5
 
-randomized critMod
+
+boost critMod
 kill/perish - just kills the enemy
 unravel - deals random damage to both, dDamage to self and dDamage*critMod to enemy
 stun
@@ -114,7 +122,7 @@ function startBattle() {
 function playerTurn() {
     var playerAccuracy = r(100) < player.hitChance;
     var playerCritical = r(100) < player.critChance;
-    var playerDamage = Math.max(d(player.damage) - r(enemy.armour), 0);
+    var playerDamage = Math.max(d(player.damage) - d(enemy.armour), 0);
 
     if(player.spellHeal > 0 &&
         (player.curHp <= player.spellHealAbs || player.curHp <= (player.maxHp * player.spellHealPerc / 100))) {
@@ -209,7 +217,7 @@ function boostPlayer() {
             player.critChance += d(4)+1;
             break;
         case 3:
-            player.critMod += 1;
+            player.critMod += 0.5;
             break;
         case 4:
             player.damage += d(6)+d(6);
@@ -249,7 +257,7 @@ function boostEnemy() {
             enemy.critChance += d(4);
             break;
         case 3:
-            enemy.critMod += 1;
+            enemy.critMod += 0.5;
             break;
         case 4:
             enemy.damage += 4+d(10);
@@ -315,7 +323,7 @@ function battle() {
 }
 
 
-battle();
+//battle();
 document.addEventListener("click", function() {
     window.scrollTo(0, 0);
     battle();

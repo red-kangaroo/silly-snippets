@@ -189,8 +189,9 @@ def get_console_stats():
     ms = 0
     lvl = 0
 
-    pwr_lvl = 75
+    pwr_lvl = 10
     weapon = pwr_lvl
+    catalyst = pwr_lvl
     armour = pwr_lvl  # First, determine Effective Armour as average armour of head, arms, torso and legs. If your Invulnerability is higher than Effective Armour, use Invulnerability instead.
     shield = pwr_lvl
 
@@ -275,9 +276,12 @@ def get_console_stats():
     # ranged_bonus = int((ranged + pwr_lvl) // 2)
     # print(f"{'Firearm': >{max_stat_len}}: {ranged: >3} | {ranged_bonus: <2}")
     spell = all_stats["Magic Power"]["score"] if "Magic Power" in all_stats.keys() else all_stats["Magic"]["score"]
-    spell += all_stats["Str. of Will"]["score"]
-    spell_bonus = int((spell + pwr_lvl) // 2)
+    spell += all_stats["Str. of Will"]["score"] + catalyst
+    spell_bonus = int((spell + pwr_lvl) // 3)
     print(f"{'Spell': >{max_stat_len}}: {spell: >3} | {spell_bonus: <2}")
+    bluff = all_stats["Fellowship"]["score"]
+    bluff_bonus = int((bluff + pwr_lvl) // 2)
+    print(f"{'Bluff': >{max_stat_len}}: {bluff: >3} | {bluff_bonus: <2}")
 
     print("")
 
@@ -292,9 +296,13 @@ def get_console_stats():
     parry = all_stats["Skill"]["score"] + all_stats["Speed"]["score"] + weapon
     parry_bonus = int((parry + pwr_lvl) // 3)
     print(f"{'Parry': >{max_stat_len}}: {parry: >3} | {parry_bonus: <2}")
-    bluff = all_stats["Fellowship"]["score"]
-    bluff_bonus = int((bluff + pwr_lvl) // 2)
-    print(f"{'Bluff': >{max_stat_len}}: {bluff: >3} | {bluff_bonus: <2}")
+    spell = all_stats["Magic Power"]["score"] if "Magic Power" in all_stats.keys() else all_stats["Magic"]["score"]
+    spell += all_stats["Senses"]["score"] + catalyst
+    spell_bonus = int((spell + pwr_lvl) // 3)
+    print(f"{'Counterspell': >{max_stat_len}}: {spell: >3} | {spell_bonus: <2}")
+    stlth = all_stats["Skill"]["score"] + all_stats["Speed"]["score"] + all_stats["Senses"]["score"]
+    stlth_bonus = int((stlth + pwr_lvl) // 3)
+    print(f"{'Stealth': >{max_stat_len}}: {stlth: >3} | {stlth_bonus: <2}")
 
     print("")
 
@@ -343,9 +351,9 @@ DIFFERENCE       %
 if __name__ == "__main__":
     # get_pool_stats()
 
-    for i in range(2):
-        print("\n==========\n")
-        get_console_stats()
-
-    # while get_console_stats():
+    # for i in range(2):
     #     print("\n==========\n")
+    #     get_console_stats()
+
+    while get_console_stats():
+        print("\n==========\n")
