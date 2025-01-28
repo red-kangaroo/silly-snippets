@@ -35,7 +35,9 @@ LOCATIONS = ['O', 'o',
 IGNORE = [' ', '\n']
 
 # TODO: Name your map here:
-MAP_NAME = "island"
+MAP_NAME = "fate"
+
+IMG_IN = "Fate-world.gif"
 
 
 ##################################################
@@ -68,5 +70,52 @@ def convert_ascii():
     img.show()
 
 
+PXL_MAP = {
+    '.': (192, 192, 192),  # road
+    '#': (0, 0, 0),  # wall
+    # Vegetation:
+    '(': (0, 128, 0),  # forest
+    ')': (128, 128, 255),  # jungle
+    '-': (0, 255, 128),  # plains
+    '\'': (0, 128, 128),  # swamp
+    # Wastes:
+    (99, 66, 33): (128, 128, 128),  # mountain
+    # '': (),  # volcano
+    'u': (128, 64, 0),  # hills
+    'v': (255, 0, 0),  # mountain pass
+    '_': (255, 255, 255),  # tundra
+    '=': (255, 255, 0),  # desert
+    '"': (255, 128, 0),  # beach
+    ';': (128, 128, 0),  # desolation
+    # Water:
+    '+': (0, 0, 255),  # sea
+    '`': (0, 255, 255),  # lake
+    '~': (0, 128, 255),  # river
+    # '-': (0, 255, 255),  # brook
+    # Special locations:
+    '@': (128, 0, 128),
+    '*': (255, 0, 255)  # cave
+}
+
+
+def convert_img():
+    # Create a new image
+    img = Image.new('RGB',
+                    (100, 100),  # size
+                    'white')  # background
+    pxl = img.load()
+
+    with Image.open(f'maps_src/{IMG_IN}') as f:
+        map_in = f.load()
+        for x in range(map_in.size[0]):
+            for y in range(map_in.size[1]):
+                pass
+
+
+    img.save(f'maps_bmp/{MAP_NAME}.bmp')
+    img.show()
+
+
 if __name__ == "__main__":
-    convert_ascii()
+    # convert_ascii()
+    convert_img()
