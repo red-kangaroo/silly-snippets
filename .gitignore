@@ -1,4 +1,12 @@
-# Do not track these files.
+# Editor directories and files
+bin
+obj
+*.suo
+*.ntvs*
+*.njsproj
+*.sw*
+*.dbmdl
+*.*log
 
 # Node artifact files
 node_modules/
@@ -8,8 +16,10 @@ dist/
 *.class
 
 # Compiled Python bytecode
+.pytest_cache/
 *.py[cod]
 __pycache__
+poetry.lock
 
 # Log files
 log/
@@ -27,6 +37,7 @@ target/
 venv/
 
 # Visual Studio
+.vscode
 .vs*
 
 # Unit test reports
@@ -52,6 +63,9 @@ Thumbs.db
 *.wmv
 
 # Temporary files
-~$*.doc*
-~$*.xls*
-~$*.ppt*
+~*
+
+# Testing
+.coverage
+coverage.xml
+report.xml

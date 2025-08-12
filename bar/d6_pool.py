@@ -32,7 +32,7 @@ def roll_success_count(num):
 
 
 def roll_highest_explode(num):
-    # Roll the pool, take highest result. If it was a 6, explode.
+    # Roll the pool, take the highest result. If it was a 6, explode.
     result = 0
     rolls = list()
 
@@ -52,11 +52,34 @@ def roll_highest_explode(num):
     return result, rolls
 
 
+def roll_highest_combine(num):
+    # Roll the pool, take the highest result. If there were multiple highest results, add them.
+    result = 0
+    max_roll = 0
+    rolls = list()
+
+    while num > 0:
+        rolled = random.randint(1, 6)
+        rolls.append(rolled)
+
+        if rolled > max_roll:
+            result = rolled
+            max_roll = rolled
+        elif rolled == max_roll:
+            result += rolled
+        num -= 1
+
+    return result, rolls
+
+
 if __name__ == "__main__":
     DICE = 4
 
-    r = roll_success_count(DICE)
-    print(f"Successes: {r[0]}   {sorted(r[1])}")
+    # r = roll_success_count(DICE)
+    # print(f"Successes: {r[0]}   {sorted(r[1])}")
 
     # r = roll_highest_explode(DICE)
     # print(f"Result: {r[0]}   {r[1]}")
+
+    r = roll_highest_combine(DICE)
+    print(f"Result: {r[0]}   {r[1]}")
